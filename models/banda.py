@@ -1,8 +1,8 @@
-import re
 import json
-from models.persistencia import Persistencia
+import re
 from models.usuario import Usuario
 from models.representante import Representante
+from models.persistencia import Persistencia
 
 class Banda:
     def __init__(self, id: int, id_representante: int, nome: str, gravadora: str, genero: str, email: str, senha: str, tel: str):
@@ -109,7 +109,7 @@ class Banda:
     def to_dict(self):
         return {
             "id": self.__id, 
-            "id_representante": self.__idr,  # Corrigido aqui
+            "id_representante": self.__idr,  
             "nome": self.__nome, 
             "gravadora": self.__gravadora, 
             "genero": self.__genero, 
@@ -122,33 +122,12 @@ class Banda:
         return f"Banda {self.id}: {self.nome} - {self.genero} (Gravadora: {self.gravadora})"
 
 class Bandas(Persistencia):
-    def inserir(self, banda: Banda):
-        bandas = self.abrir()
-        bandas.append(banda.to_dict())
-        self.salvar(bandas)
-    
-    def listar(self):
-        return self.abrir()
-    
-    def excluir(self, id_banda):
-        bandas = self.abrir()
-        bandas = [b for b in bandas if b['id'] != id_banda]
-        self.salvar(bandas)
-    
-    def atualizar(self, id_banda, novos_dados):
+    def __init__(self, arquivo: str):
+        super().__init__(arquivo)
+
+    def listar_id(self, id_banda: int):
         bandas = self.abrir()
         for b in bandas:
             if b['id'] == id_banda:
-                b.update(novos_dados)
-        self.salvar(bandas)
-
-persistencia = Bandas("bandas.json")
-
-representante = Representante(1, "João", "joao@email.com",
-                               "senha123", "(11) 91234-5678")
-
-banda = Banda(1, representante.id, "RockStars", "Universal", "Rock",
-              "rockstars@email.com", "alcie@123", "(11) 98765-4321")
-
-persistencia.inserir(banda)
-print(persistencia.listar())
+                return b
+        return None

@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from models.persistencia import Persistencia
 
 class Apresentacao:
@@ -16,10 +15,9 @@ class Apresentacao:
 
     @id.setter
     def id(self, valor):
-        if isinstance(valor, int):
-            self.__id = valor
-        else:
-            raise ValueError("O id deve ser um inteiro.")
+        if not isinstance(valor, int):
+            raise ValueError("O ID deve ser um número inteiro.")
+        self.__id = valor
 
     @property
     def id_banda(self):
@@ -27,10 +25,9 @@ class Apresentacao:
 
     @id_banda.setter
     def id_banda(self, valor):
-        if isinstance(valor, int):
-            self.__id_banda = valor
-        else:
-            raise ValueError("O id da banda deve ser um inteiro.")
+        if not isinstance(valor, int):
+            raise ValueError("O ID da banda deve ser um número inteiro.")
+        self.__id_banda = valor
 
     @property
     def data(self):
@@ -38,10 +35,9 @@ class Apresentacao:
 
     @data.setter
     def data(self, valor):
-        if isinstance(valor, datetime):
-            self.__data = valor
-        else:
+        if not isinstance(valor, datetime):
             raise ValueError("Data inválida. Deve ser um objeto datetime.")
+        self.__data = valor
 
     @property
     def local(self):
@@ -49,7 +45,7 @@ class Apresentacao:
 
     @local.setter
     def local(self, valor):
-        if not isinstance(valor, str) or len(valor.strip()) == 0:
+        if not isinstance(valor, str) or not valor.strip():
             raise ValueError("Local inválido. Informe um texto válido.")
         self.__local = valor.strip()
 
@@ -71,10 +67,20 @@ class Apresentacao:
         return {
             "id": self.id,
             "id_banda": self.id_banda,
-            "data": self.data.strftime("%d/%m/%Y %H:%M"),
+            "data": self.data.strftime("%Y-%m-%d %H:%M"),
             "local": self.local,
             "confirmado": self.confirmado
         }
+
+    @staticmethod
+    def from_dict(data: dict):
+        return Apresentacao(
+            id=data["id"],
+            id_banda=data["id_banda"],
+            data=datetime.strptime(data["data"], "%Y-%m-%d %H:%M"),
+            local=data["local"],
+            confirmado=data["confirmado"]
+        )
 
 class Apresentacoes(Persistencia):
     def inserir(self, apresentacao: Apresentacao):
@@ -83,23 +89,21 @@ class Apresentacoes(Persistencia):
         self.salvar(apresentacoes)
 
     def listar(self):
-        return self.abrir()
+        return [Apresentacao.from_dict(a) for a in self.abrir()]
 
     def listar_id(self, id_apresentacao: int):
-        apresentacoes = self.abrir()
-        for a in apresentacoes:
-            if a['id'] == id_apresentacao:
-                return a
+        for a in self.abrir():
+            if a["id"] == id_apresentacao:
+                return Apresentacao.from_dict(a)
         return None
 
     def atualizar(self, id_apresentacao: int, novos_dados: dict):
         apresentacoes = self.abrir()
         for a in apresentacoes:
-            if a['id'] == id_apresentacao:
+            if a["id"] == id_apresentacao:
                 a.update(novos_dados)
         self.salvar(apresentacoes)
 
     def excluir(self, id_apresentacao: int):
-        apresentacoes = self.abrir()
-        apresentacoes = [a for a in apresentacoes if a['id'] != id_apresentacao]
+        apresentacoes = [a for a in self.abrir() if a["id"] != id_apresentacao]
         self.salvar(apresentacoes)

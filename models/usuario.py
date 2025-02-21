@@ -1,5 +1,4 @@
 import re
-import json
 from models.persistencia import Persistencia
 
 class Usuario:
@@ -10,11 +9,11 @@ class Usuario:
         self.senha = senha
     
     @property
-    def id_user(self):
+    def id(self):
         return self.__id
     
-    @id_user.setter
-    def user_id(self, novo_id):
+    @id.setter
+    def id(self, novo_id):
         if isinstance(novo_id, int):
             self.__id = novo_id
         else:
@@ -29,9 +28,8 @@ class Usuario:
         if not isinstance(novo_nome, str):
             raise ValueError('Nome inválido. O nome deve ser um texto.')
         elif not (3 <= len(novo_nome) <= 100):
-            raise ValueError('O nome da banda deve ter, no mínimo, 3 caracteres e, no máximo, 100 caracteres.')
-        else:
-            self.__nome = novo_nome
+            raise ValueError('O nome deve ter entre 3 e 100 caracteres.')
+        self.__nome = novo_nome
 
     @property
     def email(self):
@@ -56,19 +54,19 @@ class Usuario:
         self.__senha = nova_senha
 
     def to_dict(self):
-        return {"nome": self.__nome, "email": self.__email, "senha": self.__senha}
+        return {
+            "id": self.__id,
+            "nome": self.__nome,
+            "email": self.__email,
+            "senha": self.__senha
+        }
 
     def __str__(self):
         return f"Usuário {self.id}: {self.nome} ({self.email})"
     
 class Usuarios(Persistencia):
-    def inserir(self, usuario: Usuario):
-        usuarios = self.abrir()
-        usuarios.append(usuario.to_dict())
-        self.salvar(usuarios)
-
-    def listar(self):
-        return self.abrir()
+    def __init__(self, arquivo: str):
+        super().__init__(arquivo)
 
     def listar_id(self, id_usuario: int):
         usuarios = self.abrir()
@@ -76,15 +74,3 @@ class Usuarios(Persistencia):
             if u['id'] == id_usuario:
                 return u
         return None
-
-    def atualizar(self, id_usuario: int, novos_dados: dict):
-        usuarios = self.abrir()
-        for u in usuarios:
-            if u['id'] == id_usuario:
-                u.update(novos_dados)
-        self.salvar(usuarios)
-
-    def excluir(self, id_usuario: int):
-        usuarios = self.abrir()
-        usuarios = [u for u in usuarios if u['id'] != id_usuario]
-        self.salvar(usuarios)

@@ -1,6 +1,6 @@
+import re
 from models.usuario import Usuario
 from models.persistencia import Persistencia
-import re
 
 class Representante(Usuario):
     def __init__(self, id: int, nome: str, email: str, senha: str, telefone: str):
@@ -28,13 +28,8 @@ class Representante(Usuario):
         return f"Representante {self.id}: {self.nome} ({self.email}, {self.telefone})"
     
 class Representantes(Persistencia):
-    def inserir(self, representante: Representante):
-        representantes = self.abrir()
-        representantes.append(representante.to_dict())
-        self.salvar(representantes)
-
-    def listar(self):
-        return self.abrir()
+    def __init__(self, arquivo: str):
+        super().__init__(arquivo)
 
     def listar_id(self, id_representante: int):
         representantes = self.abrir()
@@ -42,17 +37,3 @@ class Representantes(Persistencia):
             if r['id'] == id_representante:
                 return r
         return None
-
-    def atualizar(self, id_representante: int, novos_dados: dict):
-        representantes = self.abrir()
-        for r in representantes:
-            if r['id'] == id_representante:
-                r.update(novos_dados)
-        self.salvar(representantes)
-
-    def excluir(self, id_representante: int):
-        representantes = self.abrir()
-        representantes = [r for r in representantes if r['id'] != id_representante]
-        self.salvar(representantes)
-
-representante = Representante(1, "João", "joao@email.com", "senha123", "(11) 91234-5678")

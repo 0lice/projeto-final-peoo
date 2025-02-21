@@ -1,5 +1,5 @@
 import re
-from persistencia import Persistencia
+from models.persistencia import Persistencia
 
 class Cidade:
     def __init__(self, id: int, nome: str, local_show: str, estado: str):
@@ -7,7 +7,6 @@ class Cidade:
         self.nome = nome
         self.local_show = local_show
         self.estado = estado
-        self.apresentacoes = []
 
     @property
     def id(self):
@@ -50,36 +49,20 @@ class Cidade:
             raise ValueError("Estado inválido. Informe pelo menos 2 caracteres.")
         self.__estado = valor.strip()
 
-    def adicionar_apresentacao(self, apresentacao):
-        self.apresentacoes.append(apresentacao)
-
-    def __str__(self):
-        return f"nome: {self.nome} - lugar do show: {self.local_show} - estado: {self.estado} - apresentações: {[ap.nome for ap in self.apresentacoes]}"
-
     def to_dict(self):
         return {
             "id": self.id,
             "nome": self.nome,
             "local_show": self.local_show,
-            "estado": self.estado,
-            "apresentacoes": [ap.nome for ap in self.apresentacoes]
+            "estado": self.estado
         }
-    
+
+    def __str__(self):
+        return f"Cidade {self.id}: {self.nome} - Local do show: {self.local_show} - Estado: {self.estado}"
 
 class Cidades(Persistencia):
-    def inserir(self, cidade: Cidade):
-        cidades = self.abrir()
-        # Define um novo id incrementando o maior existente
-        if cidades:
-            max_id = max(c['id'] for c in cidades)
-        else:
-            max_id = 0
-        cidade.id = max_id + 1
-        cidades.append(cidade.to_dict())
-        self.salvar(cidades)
-
-    def listar(self):
-        return self.abrir()
+    def __init__(self, arquivo: str):
+        super().__init__(arquivo)
 
     def listar_id(self, id_cidade: int):
         cidades = self.abrir()
@@ -87,15 +70,3 @@ class Cidades(Persistencia):
             if c['id'] == id_cidade:
                 return c
         return None
-
-    def atualizar(self, id_cidade: int, novos_dados: dict):
-        cidades = self.abrir()
-        for c in cidades:
-            if c['id'] == id_cidade:
-                c.update(novos_dados)
-        self.salvar(cidades)
-
-    def excluir(self, id_cidade: int):
-        cidades = self.abrir()
-        cidades = [c for c in cidades if c['id'] != id_cidade]
-        self.salvar(cidades)
