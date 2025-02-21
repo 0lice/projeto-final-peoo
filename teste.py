@@ -10,7 +10,7 @@ def testar_bandas():
     print("📝 TESTANDO BANDAS 📝")
     
     banda_teste = Banda(1, 2, "Banda X", "bandeirantes", "rock", "nalice123@gmail.com", "alice@123", "(84) 99965-5932")
-    persistencia = Persistencia("dados_agenda.json")
+    persistencia = Persistencia("dados/dados_agenda.json")
     
     persistencia.salvar([banda_teste.to_dict()])
     print(f"📥 Banda adicionada:\n{banda_teste}")
@@ -28,7 +28,7 @@ def testar_representantes():
     print("🕴️ TESTANDO REPRESENTANTES 🕴️")
     
     representante_teste = Representante(1, "Carlos", "carlinhos267@hotmail.com", "socorro.123", "(21) 98876-0991")
-    persistencia = Persistencia("dados_agenda.json")
+    persistencia = Persistencia("dados/dados_agenda.json")
     
     persistencia.salvar([representante_teste.to_dict()])
     print(f"📥 Representante adicionado:\n{representante_teste}")
@@ -45,7 +45,7 @@ def testar_usuarios():
     print("👤 TESTANDO USUÁRIOS 👤")
     
     usuario_teste = Usuario(1, "João", "joao@email.com", "juarez47*")
-    persistencia = Persistencia("dados_agenda.json")
+    persistencia = Persistencia("dados/dados_agenda.json")
     
     persistencia.salvar([usuario_teste.to_dict()])
     print(f"📥 Usuário adicionado:\n{usuario_teste}")
@@ -62,7 +62,7 @@ def testar_cidades():
     print("🌆 TESTANDO CIDADES 🌆")
     
     cidade_teste = Cidade(1, "Natal", "Arena das Dunas", "RN")
-    persistencia = Persistencia("dados_agenda.json")
+    persistencia = Persistencia("dados/dados_agenda.json")
     
     persistencia.salvar([cidade_teste.to_dict()])
     print(f"📥 Cidade adicionada:\n{cidade_teste}")
@@ -79,7 +79,7 @@ def testar_apresentacoes():
     print("🎤 TESTANDO APRESENTAÇÕES 🎤")
     
     apresentacao_teste = Apresentacao(1, 1, datetime(2025, 5, 10, 20, 0), "Arena das Dunas", True)
-    persistencia = Persistencia("dados_agenda.json")
+    persistencia = Persistencia("dados/dados_agenda.json")
     
     persistencia.salvar([apresentacao_teste.to_dict()])
     print(f"📥 Apresentação adicionada:\n{apresentacao_teste}")

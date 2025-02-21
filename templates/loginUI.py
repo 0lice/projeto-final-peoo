@@ -6,8 +6,8 @@ class LoginUI:
     @staticmethod
     def main():
         st.header("Entrar no Sistema")
-        email = st.text_input("E-mail")
-        senha = st.text_input("Senha", type="password")
+        email = st.text_input("E-mail", key="email")
+        senha = st.text_input("Senha", key="senha", type="password")
         
         if st.button("Entrar"):
             usuario_encontrado = None
@@ -23,9 +23,9 @@ class LoginUI:
             if usuario_encontrado:
                 st.session_state["usuario_id"] = usuario_encontrado["id"]
                 st.session_state["usuario_nome"] = usuario_encontrado["nome"]
+                st.session_state["login_sucesso"] = True
                 st.success("Login efetuado com sucesso!")
                 time.sleep(2)
                 st.rerun()
             else:
                 st.error("E-mail ou senha inválidos.")
-                
