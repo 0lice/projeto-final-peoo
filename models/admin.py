@@ -26,7 +26,6 @@ class Admin:
         """Adiciona um novo administrador ao sistema."""
         users = Admin.load_users()
         
-        # Verifica se o email já está cadastrado
         if any(user["email"] == email for user in users):
             raise ValueError("Este email já está cadastrado como administrador.")
 
@@ -38,7 +37,6 @@ class Admin:
         }
         users.append(new_admin)
 
-        # Salva os administradores no arquivo JSON
         with open(Admin.ADMIN_FILE, 'w', encoding='utf-8') as file:
             json.dump(users, file, indent=4)
         
